@@ -1,0 +1,9 @@
+Satellites/.vs/
+
+Satellites/Satellites.Api/obj
+Satellites/Satellites.Api/bin
+Satellites/Satellites.Core/bin
+Satellites/Satellites.Core/obj
+
+Satellites/Satellites.Persistence/obj/
+Satellites/Satellites.Persistence/bin/
