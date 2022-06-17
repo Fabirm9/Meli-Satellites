@@ -8,6 +8,10 @@ using Satellites.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Satellites.Core.Interfaces;
 using Satellites.Persistence.Repositories;
+using System;
+using System.Reflection;
+using System.IO;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace Satellites.Api
 {
@@ -26,6 +30,8 @@ namespace Satellites.Api
 
             services.AddControllers();
 
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             //Database
             services.AddDbContext<SatelliteContext>(options =>
                 options.UseSqlServer(
@@ -36,7 +42,14 @@ namespace Satellites.Api
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Satellites.Api", Version = "v1" });
+                c.ExampleFilters();
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
+
+            services.AddSwaggerExamplesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,10 +57,10 @@ namespace Satellites.Api
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Satellites.Api v1"));
+                app.UseDeveloperExceptionPage();                
             }
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Satellites.Api v1"));
 
             app.UseHttpsRedirection();
 
