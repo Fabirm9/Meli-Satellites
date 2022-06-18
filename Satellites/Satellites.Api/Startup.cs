@@ -13,6 +13,8 @@ using System.Reflection;
 using System.IO;
 using Swashbuckle.AspNetCore.Filters;
 using Satellites.Core.Services;
+using Microsoft.Extensions.Logging;
+using Common.Logging;
 
 namespace Satellites.Api
 {
@@ -28,6 +30,7 @@ namespace Satellites.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<ConsoleLifetimeOptions>(opts => opts.SuppressStatusMessages = true);
 
             services.AddControllers();
 
@@ -38,6 +41,7 @@ namespace Satellites.Api
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
+            //Interfaces
             services.AddTransient<ISatelliteManager, SatelliteManager>();
             services.AddTransient<ISatelliteRepository, SatelliteRepository>();
 
@@ -55,7 +59,7 @@ namespace Satellites.Api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -63,6 +67,12 @@ namespace Satellites.Api
             }
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Satellites.Api v1"));
+
+            //write on logger papertrail
+            loggerFactory.AddSyslog(
+                Configuration.GetValue<string>("PaperTrail:host"),
+                Configuration.GetValue<int>("PaperTrail:port")
+                );
 
             app.UseHttpsRedirection();
 

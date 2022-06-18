@@ -1,19 +1,27 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.32228.343
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Satellites.Api", "Satellites.Api", "{E5184128-1AC5-443F-A558-DE043C23667B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Satellites.Api", "Satellites.Api\Satellites.Api.csproj", "{A918771D-4E34-44C8-99D5-E22E711F771C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Satellites.Api", "Satellites.Api\Satellites.Api.csproj", "{A918771D-4E34-44C8-99D5-E22E711F771C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Satellites.Persistence", "Satellites.Persistence", "{A42D2A5F-15CE-493D-B52B-8A5DA06FBB98}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Satellites.Persistence", "Satellites.Persistence\Satellites.Persistence.csproj", "{B04A323A-036A-461A-9DD9-6FB73EB98AEE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Satellites.Persistence", "Satellites.Persistence\Satellites.Persistence.csproj", "{B04A323A-036A-461A-9DD9-6FB73EB98AEE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Satellites.Core", "Satellites.Core", "{165AF7B0-7D14-4858-9261-22AD35235FA2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Satellites.Core", "Satellites.Core\Satellites.Core.csproj", "{F1E4C095-7934-4B7E-8FF6-102DF95EE67C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Satellites.Core", "Satellites.Core\Satellites.Core.csproj", "{F1E4C095-7934-4B7E-8FF6-102DF95EE67C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Satellites.Testing", "Satellites.Testing", "{805843E4-7C77-4D21-923F-F9878303F404}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Satellites.Tests", "Satellites.Tests\Satellites.Tests.csproj", "{BEAE5387-F0A5-474D-8691-FBE8476C8D41}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{A7EE1714-00B9-4D2B-8599-078A84AADD27}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Logging", "Common\Common.Logging\Common.Logging.csproj", "{9CBCCF82-C33C-4729-8602-61165B77C99A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +41,14 @@ Global
 		{F1E4C095-7934-4B7E-8FF6-102DF95EE67C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1E4C095-7934-4B7E-8FF6-102DF95EE67C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1E4C095-7934-4B7E-8FF6-102DF95EE67C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEAE5387-F0A5-474D-8691-FBE8476C8D41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEAE5387-F0A5-474D-8691-FBE8476C8D41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEAE5387-F0A5-474D-8691-FBE8476C8D41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEAE5387-F0A5-474D-8691-FBE8476C8D41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CBCCF82-C33C-4729-8602-61165B77C99A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CBCCF82-C33C-4729-8602-61165B77C99A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CBCCF82-C33C-4729-8602-61165B77C99A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CBCCF82-C33C-4729-8602-61165B77C99A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -41,6 +57,8 @@ Global
 		{A918771D-4E34-44C8-99D5-E22E711F771C} = {E5184128-1AC5-443F-A558-DE043C23667B}
 		{B04A323A-036A-461A-9DD9-6FB73EB98AEE} = {A42D2A5F-15CE-493D-B52B-8A5DA06FBB98}
 		{F1E4C095-7934-4B7E-8FF6-102DF95EE67C} = {165AF7B0-7D14-4858-9261-22AD35235FA2}
+		{BEAE5387-F0A5-474D-8691-FBE8476C8D41} = {805843E4-7C77-4D21-923F-F9878303F404}
+		{9CBCCF82-C33C-4729-8602-61165B77C99A} = {A7EE1714-00B9-4D2B-8599-078A84AADD27}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {797D3FE1-1B71-4D30-9D94-0B9464A3F904}

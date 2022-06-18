@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.Logging\Common.Logging.csproj" />
     <ProjectReference Include="..\Satellites.Persistence\Satellites.Persistence.csproj" />
   </ItemGroup>
 </Project>

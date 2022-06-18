@@ -1,4 +1,5 @@
-﻿using Satellites.Core.Entities;
+﻿using Microsoft.Extensions.Logging;
+using Satellites.Core.Entities;
 using Satellites.Core.Interfaces;
 using Satellites.Core.Responses;
 using Satellites.Core.ViewModel;
@@ -13,11 +14,13 @@ namespace Satellites.Core.Services
     {
         private readonly ISatelliteRepository _satelliteRepository;
         Dictionary<string, int[]> _satellitesPosition;
+        private readonly ILogger<SatelliteManager> _logger;
         List<string> _messageSecret;
 
-        public SatelliteManager(ISatelliteRepository satelliteRepository)
+        public SatelliteManager(ISatelliteRepository satelliteRepository, ILogger<SatelliteManager> logger)
         {
             _satelliteRepository = satelliteRepository;
+            _logger = logger;
 
             _satellitesPosition = new Dictionary<string, int[]>
             {
@@ -70,7 +73,8 @@ namespace Satellites.Core.Services
             }
             catch (Exception ex)
             {
-                satelliteResponse = BuildResponseSatellite(false, 4, $"error on server {ex.Message}");
+                _logger.LogError($"Error - {ex.Message}-{ex.StackTrace}");
+                satelliteResponse = BuildResponseSatellite(false, 4, $"error on server");
                 return satelliteResponse;
             }
         }
@@ -163,7 +167,7 @@ namespace Satellites.Core.Services
             var arrayMessage = messagesConcate.Split(",");
             var cleanMessage = arrayMessage.Distinct().ToList();
 
-            string[] message = new string[_messageSecret.Count()];
+            string[] message = new string[2];
 
             foreach (var item in cleanMessage)
             {
