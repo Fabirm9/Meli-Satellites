@@ -10,3 +10,6 @@ Satellites/Satellites.Persistence/bin/
 
 Satellites/Satellites.Tests/obj/
 Satellites/Satellites.Tests/bin/
+
+Satellites/Common/Common.Logging/obj
+Satellites/Common/Common.Logging/bin
