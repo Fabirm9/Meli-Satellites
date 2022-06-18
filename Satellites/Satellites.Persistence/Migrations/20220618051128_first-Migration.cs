@@ -2,7 +2,7 @@
 
 namespace Satellites.Persistence.Migrations
 {
-    public partial class MyMigration : Migration
+    public partial class firstMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -21,21 +21,6 @@ namespace Satellites.Persistence.Migrations
                 {
                     table.PrimaryKey("PK_Satellites", x => x.Id);
                 });
-
-            migrationBuilder.InsertData(
-                table: "Satellites",
-                columns: new[] { "Id", "Distance", "Message", "Name", "Position" },
-                values: new object[] { 1, null, "", "", "-500, -200" });
-
-            migrationBuilder.InsertData(
-                table: "Satellites",
-                columns: new[] { "Id", "Distance", "Message", "Name", "Position" },
-                values: new object[] { 2, null, "", "", "-500, -200" });
-
-            migrationBuilder.InsertData(
-                table: "Satellites",
-                columns: new[] { "Id", "Distance", "Message", "Name", "Position" },
-                values: new object[] { 3, null, "", "", "-500, -200" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Satellites_Id",

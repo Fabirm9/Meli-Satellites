@@ -12,6 +12,7 @@ using System;
 using System.Reflection;
 using System.IO;
 using Swashbuckle.AspNetCore.Filters;
+using Satellites.Core.Services;
 
 namespace Satellites.Api
 {
@@ -37,6 +38,7 @@ namespace Satellites.Api
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddTransient<ISatelliteManager, SatelliteManager>();
             services.AddTransient<ISatelliteRepository, SatelliteRepository>();
 
             services.AddSwaggerGen(c =>

@@ -1,15 +1,14 @@
 ﻿using Satellites.Core.Entities;
-using Satellites.Core.Responses;
-using Satellites.Core.ViewModel;
-using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Satellites.Core.Interfaces
 {
     public interface ISatelliteRepository
     {
-        Task<ResponseSpaceship> CreateSatellites(SatellitesViewModel model);
-        Task<ResponseSpaceship> GetLocationMessage();
-        Task<ResponseSpaceship> UpdateSatellite(Satellite model);
+        Task<IList<Satellite>> GetAll();
+        Task<bool> UpdateSatellite(Satellite data, string[] message);
+        Task InsertSatellite(string name, float? distance, string nPosition, string message);
+
     }
 }

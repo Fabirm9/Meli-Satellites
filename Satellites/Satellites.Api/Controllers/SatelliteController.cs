@@ -16,12 +16,12 @@ namespace Satellites.Api.Controllers
     [ApiController]
     public class SatelliteController : ControllerBase
     {
-        private readonly ISatelliteRepository _satelliteRepository;
+        private readonly ISatelliteManager _satelliteManager;
         public readonly IMapper _mapper;
 
-        public SatelliteController(ISatelliteRepository satelliteRepository, IMapper mapper)
+        public SatelliteController(ISatelliteManager satelliteManager, IMapper mapper)
         {
-            _satelliteRepository = satelliteRepository;
+            _satelliteManager = satelliteManager;
             _mapper = mapper;
         }
 
@@ -49,7 +49,7 @@ namespace Satellites.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> TopSecret([FromBody] SatellitesViewModel model)
         {
-            var responseSatellite = await _satelliteRepository.CreateSatellites(model);
+            var responseSatellite = await _satelliteManager.CreateSatellites(model);
             if (responseSatellite.ResponseSuccess)
             {
                 return Ok(new ResponseSpaceship { ResponseSuccess = responseSatellite.ResponseSuccess, Status = responseSatellite.Status, Message = responseSatellite.Message, Data = responseSatellite.Data });
@@ -93,7 +93,7 @@ namespace Satellites.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> TopSecretSplit()
         {
-            var getPosition = await _satelliteRepository.GetLocationMessage();
+            var getPosition = await _satelliteManager.GetLocationMessage();
             if (getPosition.ResponseSuccess)
             {
                 return Ok(new ResponseSpaceship { ResponseSuccess = getPosition.ResponseSuccess, Status = getPosition.Status, Message = getPosition.Message, Data = getPosition.Data });
@@ -134,7 +134,7 @@ namespace Satellites.Api.Controllers
         public async Task<IActionResult> UpdateSatellite(SatelliteViewModel model)
         {
             var satellite = _mapper.Map<Satellite>(model);
-            var responseSatellite = await _satelliteRepository.UpdateSatellite(satellite);
+            var responseSatellite = await _satelliteManager.UpdateSatellite(satellite);
             if (responseSatellite.ResponseSuccess)
                 return Ok(new ResponseSpaceship { ResponseSuccess = responseSatellite.ResponseSuccess, Status = responseSatellite.Status, Message = responseSatellite.Message });
             else

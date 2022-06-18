@@ -10,8 +10,8 @@ using Satellites.Persistence;
 namespace Satellites.Persistence.Migrations
 {
     [DbContext(typeof(SatelliteContext))]
-    [Migration("20220608025201_MyMigration")]
-    partial class MyMigration
+    [Migration("20220618051128_first-Migration")]
+    partial class firstMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,7 +21,7 @@ namespace Satellites.Persistence.Migrations
                 .HasAnnotation("ProductVersion", "5.0.17")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Satellites.Core.Models.Satellite", b =>
+            modelBuilder.Entity("Satellites.Core.Entities.Satellite", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -45,29 +45,6 @@ namespace Satellites.Persistence.Migrations
                     b.HasIndex("Id");
 
                     b.ToTable("Satellites");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Message = "",
-                            Name = "",
-                            Position = "-500, -200"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Message = "",
-                            Name = "",
-                            Position = "-500, -200"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Message = "",
-                            Name = "",
-                            Position = "-500, -200"
-                        });
                 });
 #pragma warning restore 612, 618
         }

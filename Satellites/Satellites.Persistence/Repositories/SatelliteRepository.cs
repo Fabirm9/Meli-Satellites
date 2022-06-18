@@ -1,11 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Satellites.Core.Entities;
 using Satellites.Core.Interfaces;
-using Satellites.Core.Responses;
-using Satellites.Core.ViewModel;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Satellites.Persistence.Repositories
@@ -13,228 +9,47 @@ namespace Satellites.Persistence.Repositories
     public class SatelliteRepository : ISatelliteRepository
     {
         private readonly SatelliteContext _context;
-        Dictionary<string, int[]> _satellitesPosition;
-        List<string> _messageSecret;
-
+        
         public SatelliteRepository(SatelliteContext context)
         {
             _context = context;
-
-            _satellitesPosition = new Dictionary<string, int[]>
-            {
-                { "kenobi" , new [] { -500,-200 } },
-                { "skywalker"  , new [] { 100, -100 }},
-                { "sato" , new [] { 500, 100 }}
-            };
-
-            _messageSecret = new List<string>() { "este", "es", "un", "mensaje", "secreto" };
-        }
-        public async Task<ResponseSpaceship> CreateSatellites(SatellitesViewModel models)
-        {
-            var satelliteResponse = new ResponseSpaceship();
-            try {
-                var satellitesRequest = models.Satellites.Select(x => x.Name.ToLower());
-                var wasFoundInDictonary = satellitesRequest.Where(x => _satellitesPosition.ContainsKey(x.ToString())).Count() == 3 ? true : false;
-
-                if (wasFoundInDictonary)
-                {
-                    var messageSatellite = "";
-                    var messageAllSatellites = "";
-                    var distances = new List<float?>();
-                    foreach (var item in models.Satellites)
-                    {
-                        distances.Add(item.Distance);
-                        messageSatellite = await GetMessage(item.Message.ToArray());
-                        await SaveData(item.Name, item.Distance, messageSatellite);
-                        messageAllSatellites += messageSatellite + ",";
-                    }
-                    var getLocation = GetLocation(distances);
-                    var valuesTuple = await WasMessageDetermine(messageAllSatellites);
-                    if (valuesTuple.Item1)
-                    {
-                        var sResponse = new PositionAndMessage { Message = valuesTuple.Item2, X=getLocation.Item1, Y=getLocation.Item2 };
-                        satelliteResponse = BuildResponseSatellite(true,1,"succcess", sResponse);
-                    }
-                    else 
-                    {
-                        satelliteResponse = BuildResponseSatellite(false, 2, "without enough information");
-                    }
-                }
-                else
-                {
-                    satelliteResponse = BuildResponseSatellite(false, 3,"Object satellites aren't equals");
-                }
-
-                return satelliteResponse;
-
-            }
-            catch (Exception ex) {
-                satelliteResponse = BuildResponseSatellite(false, 4,$"error on server {ex.Message}");
-                return satelliteResponse;
-            }
         }
 
-        public async Task<ResponseSpaceship> GetLocationMessage() 
+        public async Task<IList<Satellite>> GetAll() 
         {
-            var satelliteResponse = new ResponseSpaceship();
-            try
-            {
-                var getSatellites = await _context.Satellites.ToListAsync();
-                if (getSatellites.Count() > 0) 
-                {
-                    var messageSatellite = "";
-                    var messageAllSatellites = "";
-                    var distances = new List<float?>();
-                    foreach (var item in getSatellites)
-                    {
-                        distances.Add(item.Distance);
-                        messageSatellite = string.Join(",", item.Message);
-                        messageAllSatellites += messageSatellite + ",";
-                    }
-                    var getLocation = GetLocation(distances);
-                    var valuesTuple = await WasMessageDetermine(messageAllSatellites);
-                    if (valuesTuple.Item1)
-                    {
-                        var sResponse = new PositionAndMessage { Message = valuesTuple.Item2, X = getLocation.Item1, Y = getLocation.Item2 };
-                        satelliteResponse = BuildResponseSatellite(true, 1, "succcess", sResponse);
-                    }
-                    else
-                    {
-                        satelliteResponse = BuildResponseSatellite(false, 2, "without enough information");
-                    }
-                }
-                else 
-                {
-                    satelliteResponse = BuildResponseSatellite(false, 3, "empty data");
-                }
-                return satelliteResponse;
-            }
-            catch (Exception ex)
-            {
-                satelliteResponse = BuildResponseSatellite(false, 4, "problem on server");
-                return satelliteResponse;
-            }
+            return await _context.Satellites.ToListAsync();
+
+        }
+        public async Task<Satellite> GetByName(string name) {
+            return await _context.Satellites.FirstOrDefaultAsync(s => s.Name == name);
         }
 
-        public async Task<ResponseSpaceship> UpdateSatellite(Satellite data) 
+        public async Task<bool> UpdateSatellite(Satellite data, string[] message)
         {
-            var satelliteResponse = new ResponseSpaceship();
-            try
-            {
-                var getSatellite = await _context.Satellites.Where(x => x.Name == data.Name).FirstOrDefaultAsync();
-                if (getSatellite != null)
-                {
-                    getSatellite.Distance = data.Distance;
-                    getSatellite.Message = GetMessage(data.Message).Result.Split(',');
-                    await _context.SaveChangesAsync();
-                    satelliteResponse = BuildResponseSatellite(true, 1, "succcess");
-                }
-                else 
-                {
-                    satelliteResponse = BuildResponseSatellite(false, 2, "no found");
-                }
-                return satelliteResponse;
+            var getSatellite = this.GetByName(data.Name).Result;
+            if (getSatellite == null)
+                return false;
+            getSatellite.Distance = data.Distance;
+            getSatellite.Message = message;
+            int rows = await _context.SaveChangesAsync();
 
-            }
-            catch (Exception)
-            {
+            return rows > 0;
 
-                return satelliteResponse = BuildResponseSatellite(false, 3, "problem on server"); 
-
-            }
         }
 
-        private async Task<string> GetMessage(string[] messageArray)
+        public async Task InsertSatellite(string name, float? distance, string nPosition, string message) 
         {
-            var message = "";
-            foreach (var item in messageArray) {
-                if (_messageSecret.Contains(item))
-                {
-                    message += item + ",";
-                }
-                else
-                {
-                    message += "" + ",";
-                }
-            }
-            var newMessage = await Task.FromResult(message.Substring(0, message.Length - 1));
-            return newMessage;
-        }
-
-        private async Task<Tuple<bool,string>> WasMessageDetermine(string messagesConcate)
-        {
-            var arrayMessage = messagesConcate.Split(",");
-            var cleanMessage = arrayMessage.Distinct().ToList();
-
-            string[] message = new string[_messageSecret.Count()];
-
-            foreach (var item in cleanMessage)
-            {
-                if (_messageSecret.Contains(item))
-                {
-                    int index = _messageSecret.IndexOf(item);
-                    message[index] = item;
-                }
-            }
-            var messageRequest = string.Join(" ", message);
-
-            return messageRequest.Trim() == "este es un mensaje secreto" ? await Task.FromResult(Tuple.Create(true,messageRequest.Trim())) : await Task.FromResult(Tuple.Create(false, "")) ;
-        }
-
-        private async Task<bool> SaveData(string name, float? distance, string messsage )
-        {
-            var positionSatellite= _satellitesPosition.Where(x => x.Key == name).Select(y => y.Value).FirstOrDefault();
-            var nPosition = $"{ positionSatellite[0]},{positionSatellite[1]}";
             var satellite = new Satellite
             {
                 Name = name,
                 Distance = distance,
                 Position = nPosition,
-                Message = messsage.Split(",")
+                Message = message.Split(",")
             };
             _context.Satellites.Add(satellite);
-            int row = await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
-            return row > 0; 
         }
 
-        private Tuple<float,float> GetLocation(List<float?> distances) 
-        {
-            var firstSallellite = _satellitesPosition.Where(x => x.Key == "kenobi").Select(y => y.Value).FirstOrDefault();
-            var secondSatellite = _satellitesPosition.Where(x => x.Key == "skywalker").Select(y => y.Value).FirstOrDefault();
-            var thirdSatellite = _satellitesPosition.Where(x => x.Key == "sato").Select(y => y.Value).FirstOrDefault();
-            var xFS = firstSallellite[0];
-
-            var distanceOne = Convert.ToDouble(distances[0]);
-            var distanceTwo = Convert.ToDouble(distances[1]);
-            var distanceThree = Convert.ToDouble(distances[2]);
-
-            float d = secondSatellite[0] - firstSallellite[0];
-            float i = thirdSatellite[0];
-            float j = thirdSatellite[1];
-
-            double x, y;
-
-            x = (Squeare(distanceOne) - Squeare(distanceTwo) + Squeare(d)) / (2 * d);
-            y = (Squeare(distanceOne) - Squeare(distanceThree) + Squeare(i) + Squeare(j)) / (2 * j) - (i / j) * x;
-
-            return Tuple.Create((float)x,(float)y);
-        }
-
-        private static double Squeare(double value) 
-        {
-            return value * value;
-        }
-
-        private ResponseSpaceship BuildResponseSatellite(bool isSuccess, short status, string message, PositionAndMessage satelliteResponse=null) 
-        {
-            return new ResponseSpaceship()
-            {
-                ResponseSuccess = isSuccess, 
-                Status= status,
-                Message = message,
-                Data = satelliteResponse
-            };        
-        }
     }
 }
