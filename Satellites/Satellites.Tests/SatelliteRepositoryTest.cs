@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using Microsoft.Extensions.Logging;
+using Moq;
 using Satellites.Core.Interfaces;
 using Satellites.Core.Responses;
 using Satellites.Core.Services;
@@ -13,11 +14,13 @@ namespace Satellites.Tests
 
         private readonly Mock<ISatelliteRepository> _satelliteRepository;
         private readonly SatelliteManager _satelliteManager;
+        private readonly Mock<ILogger<SatelliteManager>> _logger;
 
         public SatelliteRepositoryTest()
         {
             _satelliteRepository = new Mock<ISatelliteRepository>();
-            _satelliteManager = new SatelliteManager(_satelliteRepository.Object);
+            _logger = new Mock<ILogger<SatelliteManager>>();
+            _satelliteManager = new SatelliteManager(_satelliteRepository.Object, _logger.Object);
         }
 
 

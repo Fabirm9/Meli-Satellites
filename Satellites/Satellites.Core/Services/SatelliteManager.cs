@@ -167,7 +167,7 @@ namespace Satellites.Core.Services
             var arrayMessage = messagesConcate.Split(",");
             var cleanMessage = arrayMessage.Distinct().ToList();
 
-            string[] message = new string[2];
+            string[] message = new string[_messageSecret.Count()];
 
             foreach (var item in cleanMessage)
             {
