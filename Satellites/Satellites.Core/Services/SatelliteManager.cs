@@ -38,8 +38,9 @@ namespace Satellites.Core.Services
             {
                 var satellitesRequest = models.Satellites.Select(x => x.Name.ToLower());
                 var wasFoundInDictonary = satellitesRequest.Where(x => _satellitesPosition.ContainsKey(x.ToString())).Count() == 3 ? true : false;
-
-                if (wasFoundInDictonary)
+                var countData = _satelliteRepository.GetAll().Result.Count();
+                var countDataDb = countData < 3 ? true : false ;
+                if (wasFoundInDictonary && countDataDb)
                 {
                     var messageSatellite = "";
                     var messageAllSatellites = "";
@@ -65,7 +66,8 @@ namespace Satellites.Core.Services
                 }
                 else
                 {
-                    satelliteResponse = BuildResponseSatellite(false, 3, "Object satellites aren't equals");
+                    var messa = countData < 3 ? "Object satellites aren't equals" : "No more post with satellites allow 3";
+                    satelliteResponse = BuildResponseSatellite(false, 3, messa);
                 }
 
                 return satelliteResponse;

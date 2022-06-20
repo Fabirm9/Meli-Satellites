@@ -14,7 +14,7 @@ namespace Satellites.Core.ViewModel
         public float? Distance { get; set; }
 
         
-        [EnsureMinimumElements(min:1,max: 5, ErrorMessage ="Please min length major that 1 or menor that 5 or string empty ")]
+        [EnsureMinimumElements(min:5,max: 5, ErrorMessage ="Please min length of array string should be major or equal to 5 ")]
         public List<string> Message { get; set; }
 
     }    

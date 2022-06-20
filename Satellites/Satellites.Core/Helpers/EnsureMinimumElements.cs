@@ -22,7 +22,7 @@ namespace Satellites.Core.Helpers
             if (!(value is IList list))
                 return false;
 
-            if (list.Count == 1 && list[0].ToString() == "")
+            if (list.Count <=4)
                 return false;
 
             return list.Count >= _min && list.Count <= _max;
