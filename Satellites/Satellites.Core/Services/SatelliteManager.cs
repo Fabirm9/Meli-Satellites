@@ -116,6 +116,7 @@ namespace Satellites.Core.Services
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error - {ex.Message}-{ex.StackTrace}");
                 satelliteResponse = BuildResponseSatellite(false, 4, "problem on server");
                 return satelliteResponse;
             }
@@ -136,10 +137,11 @@ namespace Satellites.Core.Services
                 return satelliteResponse;
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                return satelliteResponse = BuildResponseSatellite(false, 3, "problem on server");
+                _logger.LogError($"Error - {ex.Message}-{ex.StackTrace}");
+                satelliteResponse = BuildResponseSatellite(false, 3, "problem on server");
+                return satelliteResponse;
 
             }
         }
