@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
+using Satellites.Core.Entities;
 using Satellites.Core.Interfaces;
 using Satellites.Core.Responses;
 using Satellites.Core.Services;
@@ -9,14 +10,14 @@ using Xunit;
 
 namespace Satellites.Tests
 {
-    public class SatelliteRepositoryTest
+    public class SatelliteManagerTest
     {
 
         private readonly Mock<ISatelliteRepository> _satelliteRepository;
         private readonly SatelliteManager _satelliteManager;
         private readonly Mock<ILogger<SatelliteManager>> _logger;
 
-        public SatelliteRepositoryTest()
+        public SatelliteManagerTest()
         {
             _satelliteRepository = new Mock<ISatelliteRepository>();
             _logger = new Mock<ILogger<SatelliteManager>>();
@@ -29,6 +30,8 @@ namespace Satellites.Tests
         {
             //arrange
             var listSatellites = BuildListSatellites();
+            var getSatellites = GetSatellitesEmpty();
+            _satelliteRepository.Setup(x => x.GetAll()).ReturnsAsync(getSatellites);
 
             //act
             var service = await _satelliteManager.CreateSatellites(listSatellites);
@@ -47,10 +50,13 @@ namespace Satellites.Tests
         public async void Create_Satellites_With_Success_But_Without_Determine_Message_Position()
         {
             //arrange
-            var listSatellites = BuildListSatellitesMessageWithOutDetermine();
+            var listSatellitesModel = BuildListSatellitesMessageWithOutDetermine();
+            var getSatellites = GetSatellitesEmpty();
+            _satelliteRepository.Setup(x => x.GetAll()).ReturnsAsync(getSatellites);
+
 
             //act
-            var service = await _satelliteManager.CreateSatellites(listSatellites);
+            var service = await _satelliteManager.CreateSatellites(listSatellitesModel);
             
             //assert
             Assert.False(service.ResponseSuccess);
@@ -63,6 +69,8 @@ namespace Satellites.Tests
         {
             //arrange
             var listSatellites = BuildListSatellitesNoEqualsToDictonary();
+            var getSatellites = GetSatellitesEmpty();
+            _satelliteRepository.Setup(x => x.GetAll()).ReturnsAsync(getSatellites);
 
             //act
             var service = await _satelliteManager.CreateSatellites(listSatellites);
@@ -103,6 +111,22 @@ namespace Satellites.Tests
             satellites.Satellites.Add(new SatelliteViewModel { Name = "skywalker", Distance = (float?)115.5, Message = new List<string> { "", "es", "un", "", "secreto" } });
             satellites.Satellites.Add(new SatelliteViewModel { Name = "sato", Distance = (float?)142.7, Message = new List<string> { "", "", "", "", "vaca" } });
 
+            return satellites;
+        }
+
+        private List<Satellite> GetSatellites() 
+        {
+            var satellites = new List<Satellite>();
+
+            satellites.Add(new Satellite { Name = "kenobi", Distance = (float?)100.0, Message = new List<string> { "este", "", "", "lola", "" }.ToArray() });
+            satellites.Add(new Satellite { Name = "skywalker", Distance = (float?)115.5, Message = new List<string> { "", "es", "un", "", "secreto" }.ToArray() });
+            satellites.Add(new Satellite { Name = "sato", Distance = (float?)142.7, Message = new List<string> { "", "", "", "", "vaca" }.ToArray() });
+            return satellites;
+        }
+
+        private List<Satellite> GetSatellitesEmpty()
+        {
+            var satellites = new List<Satellite>();
             return satellites;
         }
     }
